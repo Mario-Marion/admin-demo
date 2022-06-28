@@ -1,0 +1,4 @@
+// ACTIONS
+export const ADD_MENULIST = "ADD_MENULIST";
+export const TOGGLE_SLIDER = "TOGGLE_SLIDER";
+// GETTERS
