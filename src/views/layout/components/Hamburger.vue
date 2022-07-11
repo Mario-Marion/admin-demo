@@ -1,11 +1,22 @@
 <template>
   <div class="ve_slider_menu" @click="fn_slider_menu">
     <el-icon>
-      <component :is="opened ? 'expand' : 'fold'" />
+      <component :is="opened ? 'pand' : 'fold'" />
     </el-icon>
   </div>
 </template>
 
+
+<script lang="ts">
+import pand from '~icons/ep/expand'
+import Fold from '~icons/ep/fold'
+export default {
+  components: {
+    pand,
+    Fold
+  }
+}
+</script>
 <script setup lang="ts">
 import { TOGGLE_SLIDER } from "@/stores/constant";
 import { computed } from "vue";

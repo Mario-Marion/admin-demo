@@ -10,9 +10,9 @@
 
       <el-main>
         <el-scrollbar style="padding: 20px;box-sizing: border-box;">
-          <router-view v-slot="{ Component }">
+          <router-view #default="{ Component }">
             <transition name="el-zoom-in-top" mode="out-in">
-              <component :is="Component" />
+              <component :key="routerAlive" :is="Component" />
             </transition>
           </router-view>
         </el-scrollbar>
@@ -23,6 +23,16 @@
 <script setup lang="ts">
 import NavigateBar from "./NavigateBar.vue";
 import SideBar from "./SideBar.vue";
+
+const route = useRoute();
+const routerAlive = ref<string>('');
+watchEffect(() => {
+  routerAlive.value = (route.name as string);
+});
+provide("reload", () => {
+  routerAlive.value = Math.random() + "_" + Math.random();
+});
+
 </script>
 <style lang="less" scoped>
 .header {

@@ -1,9 +1,14 @@
 <template>
   <div class="ve_personal">
     <el-button-group>
+      <el-button title="刷新" style="border: none; font-size: 20px" circle plain @click="reload()">
+        <el-icon :size="20" style="vertical-align: middle">
+          <IEpRefresh />
+        </el-icon>
+      </el-button>
       <el-button title="全屏" style="border: none; font-size: 20px" circle plain @click="toggle()">
         <el-icon :size="14" style="vertical-align: middle">
-          <full-screen />
+          <i-ep-full-screen />
         </el-icon>
       </el-button>
       <el-button title="主题" style="border: none; " circle plain>
@@ -13,17 +18,42 @@
         inactive-icon="sunny" />
     </el-button-group>
     <el-divider direction="vertical"></el-divider>
-
+    <el-dropdown @command="handleCommand">
+      <span class="ve_nav_dropdown">
+        {{ uname }}
+        <el-icon>
+          <i-ep-arrow-down-bold />
+        </el-icon>
+      </span>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item :command="{ name: 'Login' }">
+            退出登录
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </div>
 </template>
 
 <script setup lang="ts">
 import useToggleColor from "@/utils/theme/toggleColor";
 import { lStorage } from '@/plugin/ls'
+import { useBaseStore } from "@/stores/base";
 import useColour from "@/utils/theme/colour";
 import setTheme from "@/utils/theme/theme";
 import type { Item } from "@/utils/theme/colour";
 const { toggle } = useFullscreen();
+
+const reload: any = inject("reload");
+
+const router = useRouter();
+const handleCommand = (command: string) => {
+  router.push(command);
+};
+const baseStore = useBaseStore();
+const uname = computed(() => baseStore.uname);
+
 
 
 const theme_color = ref("#409EFF");
@@ -45,9 +75,9 @@ const changTheme = (color: string) => {
   setTheme(color)
 }
 
-
+// 暗黑模式
 const dark = ref<boolean>(false);
-
+// 获取保存模式
 onBeforeMount(() => {
   const theme = localStorage.getItem('vueuse-color-scheme');
   if (theme === "dark") {
@@ -62,6 +92,8 @@ const toggleDark = () => {
   useToggle(isDark)()
   useToggleColor(dark.value ? 'dark' : 'light')
 }
+
+
 </script>
 
 <style lang="less" scoped>

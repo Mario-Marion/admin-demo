@@ -15,3 +15,5 @@ export const lStorage = {
     return ls.get(key);
   }
 };
+
+export default ls

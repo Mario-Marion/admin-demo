@@ -1,33 +1,66 @@
 
 import { defineStore } from 'pinia'
-import { ADD_MENULIST, TOGGLE_SLIDER } from "./constant";
-import type { RouteRecordName } from "vue-router";
+import XE from 'xe-utils'
+import {
+  TOGGLE_SLIDER,
+  SET_TOKEN,
+  SET_UNAME,
+  SET_MENU_LIST,
+  CLEAR_TOKEN_CNAME_MENU
+} from "./constant";
+import ls, { lStorage } from '@/plugin/ls';
 
-export interface MenuObj { id: number, name: RouteRecordName, icon: string }
+
+const tokenLs = {
+  setItem(key: string, state: string) {
+    return ls.set("token", state, 48 * 60 * 60 * 1000)
+  },
+  getItem(key: string) {
+    return ls.get("token");
+  }
+};
+
 export const useBaseStore = defineStore('base', {
   state: () => {
     return {
       slider: {
-        opened: true,
+        opened: false,
       },
-      menuList: <MenuObj[]>[],
+      token: "",
+      menuList: <Mock.MenuObj[]>[],
+      uname: "",
     }
   },
   actions: {
-    [ADD_MENULIST](arr: MenuObj[]) {
-      this.menuList = arr
-    },
     [TOGGLE_SLIDER]() {
       this.slider.opened = !this.slider.opened;
     },
+    [SET_TOKEN](token: string) {
+      this.token = token;
+    },
+    [SET_UNAME](uname: string) {
+      this.uname = uname;
+    },
+    [SET_MENU_LIST](menuList: Mock.MenuObj[]) {
+      this.menuList = menuList;
+    },
+    [CLEAR_TOKEN_CNAME_MENU]() {
+      this[SET_TOKEN]("")
+      this[SET_UNAME]("")
+      this[SET_MENU_LIST]([])
+    }
   },
   persist: {
     enabled: true,
     strategies: [
       {
-        storage: sessionStorage,
-        paths: ["slider"]
+        storage: tokenLs as Storage,
+        paths: ['token']
       },
+      {
+        storage: lStorage as Storage,
+        paths: ["uname"]
+      }
     ],
   },
 })

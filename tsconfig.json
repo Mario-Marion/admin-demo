@@ -1,6 +1,11 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue","./auto-imports.d.ts"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue","src/*.d.ts","./auto-imports.d.ts",],
+  "files": [ 
+    // 全局声明文件
+    "src/types/mock.d.ts",
+    "src/types/axios.d.ts",
+  ],
   "compilerOptions": {
     "lib": [
       "es2020"

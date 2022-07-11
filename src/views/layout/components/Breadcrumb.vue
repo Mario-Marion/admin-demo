@@ -1,14 +1,35 @@
 <template>
   <el-breadcrumb separator="/">
     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-    <el-breadcrumb-item>
-      {{ route.name }}
-    </el-breadcrumb-item>
+    <el-breadcrumb-item v-for="item of paths" :key="item" :to="{ path: item.path }">{{ item.name }}</el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+import { useBaseStore } from "@/stores/base";
+
+const baseStore = useBaseStore();
+const route = useRoute();
+
+interface Paths { path: string, name: string }
+function findPath(list: Mock.MenuObj[], url: string, paths: Paths[] = []): Paths[] {
+  for (let item of list) {
+    const path: string = item.url ? item.url.replace(/\//, '-') : '';
+    paths.push({ path, name: item.name })
+    if (item.url === url) return paths
+    if (item.children) {
+      const findChildren = findPath(item.children, url, paths);
+      if (findChildren.length > 0) return findChildren
+    }
+    paths.pop()
+  }
+  return []
+}
+const paths = computed(() => {
+  const name = route.name as string;
+  const url = name.replace(/-/, '/');
+  return findPath(baseStore.menuList, url)
+})
 
 </script>
 
