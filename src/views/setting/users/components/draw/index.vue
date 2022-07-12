@@ -10,7 +10,9 @@
             <el-input v-model="drawData.name" placeholder="name" />
           </el-form-item>
           <el-form-item label="身份" prop="role">
-            <el-select-v2 v-model="drawData.roleId" :options="roles" placeholder="请选择"></el-select-v2>
+            <el-select v-model="drawData.roleId" placeholder="请选择">
+              <el-option v-for="item in roles" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
           </el-form-item>
           <el-form-item label="账号" prop="username">
             <el-input v-model="drawData.username" placeholder="username" />
@@ -89,7 +91,7 @@ onBeforeMount(() => {
 const getDataList = async (params: Axios.SearchParams) => {
   const { status, data }: { status: number, data: Axios.RolesData } = await getRoleList(params);
   if (status == 200) {
-    roles.value = data.list.filter((item: Axios.RolesList) => item.status).map(item => {
+    roles.value = data.list.map(item => {
       return { value: item.id, label: item.name }
     })
   }

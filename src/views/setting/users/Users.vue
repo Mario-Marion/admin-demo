@@ -3,19 +3,18 @@
     <!-- 搜索 -->
     <el-form ref="queryForm" :inline="true" :model="searchForm">
       <el-form-item label="名称" prop="name">
-        <el-input v-model="name" placeholder="请输入" clearable />
+        <el-input v-model="name" placeholder="请输入"
+          @keyup.enter="getDataList({ sVal: name, sStu: status, limit, page })" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="status" placeholder="状态" class="status">
+        <el-select v-model="status" placeholder="状态" class="status"
+          @change="getDataList({ sVal: name, sStu: status, limit, page })">
           <el-option label="全部" :value="-1" />
           <el-option label="开启" :value="1" />
           <el-option label="关闭" :value="0" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getDataList({ sVal: name, sStu: status, limit, page })">
-          搜索
-        </el-button>
         <el-button @click="resetForm(queryForm)">
           重置
         </el-button>
