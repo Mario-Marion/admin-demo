@@ -57,7 +57,8 @@ const selfShow = ref(true);
 type DrawData = { type: string, checkPass: string } & Mock.UserObj
 interface Props {
   show: boolean,
-  drawData: DrawData
+  drawData: DrawData,
+  reload: () => void
 }
 const props = withDefaults(defineProps<Props>(), {
   drawData: () => ({
@@ -71,7 +72,7 @@ const props = withDefaults(defineProps<Props>(), {
     status: 1,
   })
 })
-const { show, drawData } = toRefs(props);
+const { reload, drawData } = toRefs(props);
 const emit = defineEmits<{
   (e: 'update:show', show: boolean): void
 }>();
@@ -134,7 +135,6 @@ const closeWatch = watch(() => XE.clone(drawData.value, true), (cur, pre) => {
 onBeforeUnmount(() => {
   closeWatch()
 })
-const reload: any = inject("reload");// 刷新路由
 type DrawDataAttrs = keyof DrawData
 const updataAttrs: DrawDataAttrs[] = reactive([]);//存放改变的属性
 /**
@@ -172,7 +172,7 @@ function confirmClick() {
           duration: 2000,
           message: `${type === 'success' ? `提交成功` : `提交失败`}`
         })
-        reload()
+        reload.value()
       }
       if (resCode === 200) {
         load('success')
