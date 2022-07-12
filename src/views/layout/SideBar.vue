@@ -6,6 +6,16 @@
   <div class="ve_el_menu">
     <el-scrollbar>
       <el-menu :default-active="defaultActive" :collapse="opened" :collapseTransition="true" :unique-opened="false">
+        <router-link to="/home" style="text-decoration: none;">
+          <el-menu-item index="Home">
+            <template #title>
+              <el-icon :size="16" style="margin-right: 6px">
+                <IEpHomeFilled />
+              </el-icon>
+              <span>首页</span>
+            </template>
+          </el-menu-item>
+        </router-link>
         <slide-menu v-for="item in menus" :key="item.id" :menu="item"></slide-menu>
       </el-menu>
     </el-scrollbar>
