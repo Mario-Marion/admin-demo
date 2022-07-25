@@ -48,8 +48,8 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
     if (!token || !/\S/.test(token)) {
       next({ name: "Login" }); // 
     } else {
-      let { data, status } = await getMenuList();
-      if (data && status === 200) {
+      let { status, data } = await getMenuList();
+      if (status === 200) {
         // XE.clone 克隆数据 
         // XE.mapTree 循环树状结构数据,类数组 map 方法
         // XE.toArrayTree 把数据变为树状结构
@@ -81,6 +81,7 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
 
         next({ ...to, replace: true });
       } else {
+
         next({ name: "Login" });
       }
     }

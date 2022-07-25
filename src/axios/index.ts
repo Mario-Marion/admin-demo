@@ -1,7 +1,6 @@
 import Axios from 'axios'
 import { useBaseStore } from "@/stores/base";
 
-
 let base_url;
 if (import.meta.env.MODE = "development") {
   base_url = "/api"
@@ -39,6 +38,7 @@ axios.interceptors.request.use(config => {
 
 
 axios.interceptors.response.use(res => {
+
   loading.close()
   const data = res.data;
 
@@ -52,6 +52,7 @@ axios.interceptors.response.use(res => {
       message: data.message
     })
   }
+  return data
 })
 
 
