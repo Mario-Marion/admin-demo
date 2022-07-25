@@ -21,7 +21,7 @@
       </el-form-item>
     </el-form>
     <!-- 列表 -->
-    <veTable :table="tableData">
+    <lll-table :table="tableData">
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="status" label="状态">
         <template v-slot="{ row }">
@@ -30,13 +30,12 @@
           </el-tag>
         </template>
       </el-table-column>
-    </veTable>
+    </lll-table>
   </div>
 </template>
 
 <script setup lang="ts">
 import { getRoleList } from "@/axios/role"
-import veTable from '@/components/veTable/VeTable.vue'
 import type { FormInstance } from 'element-plus'
 
 const queryForm = ref<FormInstance>();

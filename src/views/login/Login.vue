@@ -44,7 +44,6 @@ import type { FormInstance } from 'element-plus'
 import { login } from '@/axios/user'
 import { useBaseStore } from "@/stores/base";
 import { SET_TOKEN, SET_UNAME, CLEAR_TOKEN_CNAME_MENU } from "@/stores/constant"
-import { ElMessage } from 'element-plus'
 import { toMD5 } from '@/plugin/crypto';
 
 const ref_form = ref<FormInstance>();

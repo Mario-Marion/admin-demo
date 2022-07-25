@@ -22,7 +22,7 @@
     </el-form>
 
     <!-- 列表 -->
-    <veTable :table="tableData" :pagination="{ onSizeChange, onCurrentChange, page, limit, total }">
+    <lll-table :table="tableData" :pagination="{ onSizeChange, onCurrentChange, page, limit, total }">
       <template #tool_bar>
         <el-button style="width: 100%" @click="handleAdd">Add Item</el-button>
       </template>
@@ -50,8 +50,9 @@
           </template>
         </template>
       </el-table-column>
-    </veTable>
-    <Draw v-if="drawShow" v-model:show="drawShow" :drawData="drawData" :reload="getUsers" />
+    </lll-table>
+    <Draw v-if="drawShow" v-model:show="drawShow" :info="info" :drawForm="drawForm" />
+
   </div>
 </template>
 <script setup lang="ts">
@@ -61,25 +62,27 @@ import IEPEdit from '~icons/ep/edit'
 import IEPDelete from '~icons/ep/delete'
 import Draw from './components/draw'
 
-const onSizeChange = (limit: number) => { getDataList({ limit, page: 1 }) }
-const onCurrentChange = (page: number) => { getDataList({ limit: limit.value, page }) }
-
+// ==============搜索
 const queryForm = ref<FormInstance>();
-const tableData = ref<Mock.UserObj[]>([]);
-
 const searchData = reactive({
   name: "",
   status: -1,
 });
+const { name, status } = toRefs(searchData);
+
+// ==============分页
 const pageData = reactive({
   limit: 10,
   page: 1,
   total: 0,
 })
-const { name, status } = toRefs(searchData);
+
 const { limit, page, total } = toRefs(pageData);
+const onSizeChange = (limit: number) => { getDataList({ limit, page: 1 }) }
+const onCurrentChange = (page: number) => { getDataList({ limit: limit.value, page }) }
 
-
+// ==============表单
+const tableData = ref<Mock.UserObj[]>([]);
 /**
  * @description: 获取列表数据
  * @param {*}
@@ -95,27 +98,33 @@ const getDataList = async (params: Axios.SearchParams) => {
     tableData.value = list;
   }
 };
-
 const getUsers = () => { getDataList({ limit: pageData.limit, page: pageData.page }) };
+onBeforeMount(() => {
+  getUsers()
+});
+
+/**
+ * @description 重置
+ */
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
   getUsers()
 }
-onBeforeMount(() => {
-  getUsers()
-});
 
-
+// ============== 抽屉
 const drawShow = ref(false);
-const drawData = ref();
+const info = reactive({ type: '', id: -1, reload: getUsers })
+const drawForm = ref({});
+
 /**
  * @description 添加用户
  */
 const handleAdd = () => {
   drawShow.value = true
-  drawData.value = {
-    type: 'add',
+  info.type = 'add'
+  info.id = -1
+  drawForm.value = {
     name: '',
     roleId: 2,
     username: '',
@@ -123,6 +132,7 @@ const handleAdd = () => {
     checkPass: '',
     status: 1,
   }
+
 }
 /**
  * @description 编辑用户
@@ -130,13 +140,11 @@ const handleAdd = () => {
 
 const handleEdit = (row: Mock.UserObj) => {
   drawShow.value = true
-
-  const data = tableData.value.find(item => item.id === row.id);
-
-  drawData.value = {
-    type: 'edit',
-    ...data
-  }
+  info.type = 'edit'
+  info.id = row.id
+  const data = tableData.value.find(item => item.id === row.id)!;
+  const { name, roleId, username, status } = data
+  drawForm.value = { name, roleId, username, status }
 }
 /**
  * @description 删除用户
