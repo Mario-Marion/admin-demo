@@ -1,26 +1,7 @@
 <template>
   <div class="ve_container">
     <!-- 搜索 -->
-    <el-form ref="queryForm" :inline="true" :model="searchData">
-      <el-form-item label="名称" prop="name">
-        <el-input v-model="name" placeholder="请输入"
-          @keyup.enter="getDataList({ sVal: name, sStu: status, limit, page })" />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="status" placeholder="状态" class="status"
-          @change="getDataList({ sVal: name, sStu: status, limit, page })">
-          <el-option label="全部" :value="-1" />
-          <el-option label="开启" :value="1" />
-          <el-option label="关闭" :value="0" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="resetForm(queryForm)">
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
-
+    <lll-form :options="options"></lll-form>
     <!-- 列表 -->
     <lll-table :table="tableData" :pagination="{ onSizeChange, onCurrentChange, page, limit, total }">
       <template #tool_bar>
@@ -57,18 +38,10 @@
 </template>
 <script setup lang="ts">
 import { getUserList, deleteUser } from "@/axios/user"
-import type { FormInstance } from 'element-plus'
 import IEPEdit from '~icons/ep/edit'
 import IEPDelete from '~icons/ep/delete'
 import Draw from './components/draw'
 
-// ==============搜索
-const queryForm = ref<FormInstance>();
-const searchData = reactive({
-  name: "",
-  status: -1,
-});
-const { name, status } = toRefs(searchData);
 
 // ==============分页
 const pageData = reactive({
@@ -80,6 +53,44 @@ const pageData = reactive({
 const { limit, page, total } = toRefs(pageData);
 const onSizeChange = (limit: number) => { getDataList({ limit, page: 1 }) }
 const onCurrentChange = (page: number) => { getDataList({ limit: limit.value, page }) }
+
+// ==============搜索表单
+const options: LLLForm.Options = reactive({
+  showButton: ['reset'],
+  gutter: 10,
+  columns: [{
+    label: '名称',
+    prop: 'name',
+    span: 5,
+  },
+  {
+    label: '状态',
+    prop: 'status',
+    type: 'select',
+    value: -1,
+    span: 3,
+    list: [
+      {
+        label: '全部',
+        value: -1
+      },
+      {
+        label: '开启',
+        value: 1
+      },
+      {
+        label: '禁用',
+        value: 0
+      }
+    ]
+  }],
+  callback: {
+    updateHandle: (newFormData) => {
+      const { name: sVal, status: sStu } = newFormData;
+      getDataList({ sVal, sStu, limit: limit.value, page: page.value })
+    }
+  }
+})
 
 // ==============表单
 const tableData = ref<Mock.UserObj[]>([]);
@@ -103,14 +114,6 @@ onBeforeMount(() => {
   getUsers()
 });
 
-/**
- * @description 重置
- */
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-  getUsers()
-}
 
 // ============== 抽屉
 const drawShow = ref(false);
