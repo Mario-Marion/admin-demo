@@ -1,15 +1,21 @@
 <template>
   <div>
-    <el-form ref="formRef" :model="formData" :rules="options.rules" label-width="120px" class="demo-ruleForm"
-      status-icon>
-      <el-form-item v-for="column of options.columns" :label="column.label" :prop="column.prop" :rules="column.rules">
-        <component :is="getComponent(column.type)" v-model:bindValue="formData[column.prop]" v-bind="column">
-        </component>
-      </el-form-item>
-      <el-form-item v-if="showButton?.length">
-        <el-button v-if="showButton.includes('submit')" @click="submitForm">提交</el-button>
-        <el-button v-if="showButton.includes('reset')" @click="resetForm">重置</el-button>
-      </el-form-item>
+    <el-form ref="formRef" :model="formData" :label-width="options.labelwidth" :rules="options.rules"
+      class="demo-ruleForm" status-icon>
+      <el-row :align="options.align" :justify="options.justify" :gutter="options.gutter">
+        <el-col :span="column.span" v-for="column of options.columns">
+          <el-form-item :label="column.label" :prop="column.prop" :rules="column.rules">
+            <component :is="getComponent(column.type)" v-model:bindValue="formData[column.prop]" v-bind="column">
+            </component>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="showButton?.length">
+          <el-form-item>
+            <el-button v-if="showButton.includes('submit')" @click="submitForm">提交</el-button>
+            <el-button v-if="showButton.includes('reset')" @click="resetForm">重置</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
   </div>
 
@@ -42,9 +48,10 @@ const { defaultVal, showButton, callback = {} } = options.value
 
 const formData = ref<LLLForm.FormData>({});
 
-const stopWcol = watch(() => options.value.columns, (cur) => {
+
+const stopWcol = watchEffect(() => {
   const form: LLLForm.FormData = {};
-  cur.forEach(({ type, prop, value }) => {
+  options.value.columns.forEach(({ type, prop, value }) => {
     if (!validatenull(value)) {
       form[prop] = value
     } else if (type) {
@@ -63,9 +70,9 @@ const stopWcol = watch(() => options.value.columns, (cur) => {
   })
   formData.value = form
   console.log('初始化数据', formData.value);
-}, {
-  deep: true
 })
+
+
 onBeforeUnmount(() => {
   stopWcol()
 })
@@ -109,7 +116,6 @@ const resetForm = () => {
 }
 defineExpose({
   formRef,
-  formData,
   submitForm, // 暴露提交方法,可外部调用
   resetForm   // 暴露重置方法,可外部调用
 })

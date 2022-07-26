@@ -27,4 +27,7 @@ const { update, text } = useInitVal(emit, bindValue);
 </script>
 
 <style lang="less" scoped>
+.lll-input {
+  width: 100%;
+}
 </style>

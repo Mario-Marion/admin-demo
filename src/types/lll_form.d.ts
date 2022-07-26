@@ -4,6 +4,7 @@ declare global {
   namespace LLLForm {
     interface Column {
       label: string,
+      span?: number,
       prop: string,
       type?: string,
       value?: string | number | [], // 默认值
@@ -24,6 +25,10 @@ declare global {
         updateHandle?: (fromData: T) => void,
       },
       columns: Column[],
+      labelwidth?: string,
+      justify?: string,
+      align?: string,
+      gutter?: number,
     }
   }
 

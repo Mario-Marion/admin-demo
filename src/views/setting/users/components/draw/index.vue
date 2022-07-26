@@ -2,7 +2,6 @@
   <div>
     <el-drawer v-model="selfShow" :direction="direction" :title="`${info.type === 'add' ? `添加` : `编辑`}`"
       :before-close="handleClose">
-
       <template #default>
         <lll-form ref="Form" :options="options"></lll-form>
       </template>
@@ -41,6 +40,8 @@ const { info, drawForm } = toRefs(props);
 
 const newFormData = ref<DrawForm>(XE.clone(drawForm.value)); // 最新表单数据
 const options = reactive<LLLForm.Options>({  // 定义表单
+  labelwidth: '80PX',
+  justify: "center",
   callback: {
     updateHandle: (data: DrawForm) => { newFormData.value = data }
   },

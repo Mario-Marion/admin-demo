@@ -7,20 +7,21 @@
 </template>
 
 <script setup lang="ts">
-
-/**
+/**@labelwidth el-form表单属性                     【可选】
+ * @justify formItem 布局，el-row属性              【可选】
+ * @gutter formItem间距，类型为number              【可选】
  * @defaultVal 集中设置formItem默认值，权重最高     【可选】
  * @rules 集中设定formItem验证规则                  【可选】
  * @showButton 表单按钮默认为空                     【可选】
- * @callback 表单事件回调
- * @columns 设置formItem                           【必须】
+ * @callback 表单事件回调                           【可选】
+ * @columns 设置formItem                           
  *   -value是默认值,权重较低                        【可选】
  *   -rules是验证规则                               【可选】
  *   -type是formItem内容标签类型,默认input           【可选】
  *   -list 如果type为select ，那就为必选
+ *   -span el-clo 属性                              【可选】
  * ####组件暴露出的属性方法
  *  formRef,    // 表单元素
- *  formData,   // 表单数据
  *  submitForm, // 暴露提交方法,可外部调用
  *  resetForm   // 暴露重置方法,可外部调用
  */

@@ -53,12 +53,12 @@ export const useColumns = (drawForm: { [p: string]: string | number }, options: 
     const columns = ref<LLLForm.Column[]>([]);
     Object.entries(drawForm).forEach(([prop, value]) => {
       const formItem = mirror[prop];
-      let item: LLLForm.Column = { ...formItem, prop, value };
+      let item: LLLForm.Column = { ...formItem, prop, value, span: 20 };
       if (prop === 'roleId') {
-        item = { ...formItem, prop, value, list: cur }
+        item = { ...formItem, prop, value, list: cur, span: 20 }
       }
       if (prop === 'status') {
-        item = { ...formItem, prop, value, list: statusList }
+        item = { ...formItem, prop, value, list: statusList, span: 20 }
       }
       columns.value.push(item)
     });

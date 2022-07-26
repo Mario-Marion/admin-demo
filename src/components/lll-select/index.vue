@@ -29,4 +29,11 @@ const { update, text } = useInitVal(emit, bindValue);
 </script>
 
 <style lang="less" scoped>
+.lll-select {
+  width: 100%;
+
+  :deep(.el-select) {
+    width: 100%;
+  }
+}
 </style>
