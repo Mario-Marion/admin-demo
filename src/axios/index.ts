@@ -1,5 +1,7 @@
 import Axios from 'axios'
 import { useBaseStore } from "@/stores/base";
+import router from "@/router"
+
 
 let base_url;
 if (import.meta.env.MODE = "development") {
@@ -51,6 +53,9 @@ axios.interceptors.response.use(res => {
       duration: 3000,
       message: data.message
     })
+  }
+  if (data.message.includes("无效token")) {
+    router.push({ name: "Login" })
   }
   return data
 })
