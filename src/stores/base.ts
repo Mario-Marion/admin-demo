@@ -9,7 +9,7 @@ import {
   CLEAR_TOKEN_CNAME_MENU
 } from "./constant";
 import ls, { lStorage } from '@/plugin/ls';
-
+import { staticRoutes } from '@/router/main'
 
 const tokenLs = {
   setItem(key: string, state: string) {
@@ -20,6 +20,7 @@ const tokenLs = {
   }
 };
 
+
 export const useBaseStore = defineStore('base', {
   state: () => {
     return {
@@ -28,6 +29,7 @@ export const useBaseStore = defineStore('base', {
       },
       token: "",
       menuList: <Mock.MenuObj[]>[],
+      staticRoutes: staticRoutes,
       uname: "",
     }
   },

@@ -10,9 +10,9 @@ import mainRoutes from "@/router/main";
 import router from '@/router'
 import XE from 'xe-utils'
 import NProgress from "nprogress";
-
+import type { StaticRoute } from '@/router/main';
 /**
-* 判断当前路由类型, global: 全局路由, main: 主入口路由
+* @description 判断当前路由类型, global: 全局路由, main: 主入口路由
 * @param {*} route 当前路由
 */
 function fnCurrentRouteType(route: RouteLocationNormalized, globalRoutes: RouteRecordRaw[] = []) {
@@ -29,7 +29,7 @@ function fnCurrentRouteType(route: RouteLocationNormalized, globalRoutes: RouteR
   return "main"
 }
 
-
+// 路由拦截
 router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const baseStore = useBaseStore();
   let token = baseStore.token;
@@ -57,8 +57,8 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
         let _list: Mock.MenuObj[] = XE.clone(data, true);
         data.forEach((item: Mock.MenuObj, index: number) => {
           if (item.parentId === undefined) {
-            const { id, name, url, menu, type, icon, sort } = item;
-            _list[index] = { id, name, url, menu, type, icon, sort };
+            const { id, name, url, type, icon, sort } = item;
+            _list[index] = { id, name, url, type, icon, sort };
           }
         });
 
@@ -76,7 +76,7 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
             return item;
           }
         );
-        await fnAddDynamicMenuRoutes(data);
+        await fnAddDynamicMenuRoutes([...baseStore.staticRoutes, ...data]);
         baseStore[SET_MENU_LIST](data)
 
         next({ ...to, replace: true });
@@ -88,9 +88,10 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   }
 });
 router.afterEach(() => {
-  // alert('stop')
   NProgress.done();
 });
+
+
 
 /**
  * 添加动态(菜单)路由
@@ -99,7 +100,7 @@ router.afterEach(() => {
  */
 
 const viwesDir = import.meta.glob("@/views/**/*.vue");
-const fnAddDynamicMenuRoutes = async (menuList: Mock.MenuObj[] = [], routes: RouteRecordRaw[] = []) => {
+const fnAddDynamicMenuRoutes = async (menuList: StaticRoute[] = [], routes: RouteRecordRaw[] = []) => {
   let temp: Mock.MenuObj[] = [];
   for (let i = 0; i < menuList.length; i++) {
     if (
@@ -109,18 +110,12 @@ const fnAddDynamicMenuRoutes = async (menuList: Mock.MenuObj[] = [], routes: Rou
     ) {
       temp = temp.concat(menuList[i].children!);
     } else if (menuList[i].type == 1) {
-      let route: RouteRecordRaw = {
+      let route = {
         path: menuList[i].url.replace(/\//g, "-"),
-        component: () => Promise.resolve(),
-        name: menuList[i].url.replace(/\//g, "-"),
-        // meta: {
-        // }
+        component: menuList[i].component || viwesDir[`../views/${menuList[i].url}/index.vue`],
+        name: menuList[i].url.replace(/\//g, "-").toUpperCase(),
+        // meta: {}
       };
-
-      const arr: string[] = menuList[i].url.split('/');
-      const dir = arr[1].toLowerCase();
-      const name = arr[1][0].toUpperCase() + dir.slice(1);
-      route["component"] = viwesDir[`../views/${arr[0]}/${dir}/${name}.vue`];
       routes.push(route);
     }
   }

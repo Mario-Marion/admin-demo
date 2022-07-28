@@ -1,6 +1,6 @@
 <template>
   <el-breadcrumb separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item v-if="route.name !== 'HOME'" :to="{ path: '/' }">首页</el-breadcrumb-item>
     <el-breadcrumb-item v-for="item of paths" :key="item" :to="{ path: item.path }">{{ item.name }}</el-breadcrumb-item>
   </el-breadcrumb>
 </template>
@@ -27,8 +27,8 @@ function findPath(list: Mock.MenuObj[], url: string, paths: Paths[] = []): Paths
 }
 const paths = computed(() => {
   const name = route.name as string;
-  const url = name.replace(/-/, '/');
-  return findPath(baseStore.menuList, url)
+  const url = name.replace(/-/, '/').toLowerCase();
+  return findPath([...baseStore.staticRoutes, ...baseStore.menuList], url)
 })
 
 </script>

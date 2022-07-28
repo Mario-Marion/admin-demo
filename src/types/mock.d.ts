@@ -2,10 +2,9 @@ declare module "*"
 declare namespace Mock {
   export interface MenuObj {
     parentId?: number;
-    id: number;
+    id?: number;
     name: string;
     url: string;
-    menu: string;
     type: number;
     icon: string;
     sort: number;

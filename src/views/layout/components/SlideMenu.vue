@@ -23,16 +23,21 @@ import Setting from '~icons/ep/setting'
 import UserFilled from '~icons/ep/userFilled'
 import HelpFilled from '~icons/ep/helpFilled'
 import CollectionTag from '~icons/ep/collectionTag'
+import HomeFilled from '~icons/ep/homeFilled'
+import BrushFilled from '~icons/ep/brushFilled'
 export default {
   components: {
     Setting,
     UserFilled,
     HelpFilled,
-    CollectionTag
+    CollectionTag,
+    HomeFilled,
+    BrushFilled
   }
 }
 </script>
 <script setup lang="ts">
+
 import XE from 'xe-utils'
 
 type props = {
@@ -43,14 +48,14 @@ const { menu } = toRefs(props);
 
 const router = useRouter();
 const clickMenu = (menu: any) => {
-  let name = menu.url.replace(/\//g, "-");
+  let name = menu.url.replace(/\//g, "-").toUpperCase();
   router.push({
     name,
   });
 };
 
 const setIndex = (menu: any) => {
-  let index = `${menu.url.replace(/\//g, "-")}`;
+  let index = `${menu.url.replace(/\//g, "-").toUpperCase()}`;
   return index;
 };
 /**
