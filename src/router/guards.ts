@@ -11,86 +11,7 @@ import router from '@/router'
 import XE from 'xe-utils'
 import NProgress from "nprogress";
 import type { StaticRoute } from '@/router/main';
-/**
-* @description 判断当前路由类型, global: 全局路由, main: 主入口路由
-* @param {*} route 当前路由
-*/
-function fnCurrentRouteType(route: RouteLocationNormalized, globalRoutes: RouteRecordRaw[] = []) {
-  for (let i = 0; i < globalRoutes.length; i++) {
-    if (route.name === globalRoutes[i].name) {
-      return "global";
-    } else if (
-      globalRoutes[i].children &&
-      (globalRoutes[i].children as RouteRecordRaw[]).length >= 1
-    ) {
-      fnCurrentRouteType(route, globalRoutes[i].children)
-    }
-  }
-  return "main"
-}
-
-// 路由拦截
-router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-  const baseStore = useBaseStore();
-  let token = baseStore.token;
-  NProgress.start();
-  if ( // 已经添加了动态路由 或 访问的是全局路由，放行
-    fnCurrentRouteType(to, globalRoutes) === "global" ||
-    baseStore.menuList.length > 0
-  ) {
-
-    if (to.meta.title) {
-      document.title = (to.meta.title as string);
-    }
-    next();
-  } else {
-
-    if (!token || !/\S/.test(token)) {
-      next({ name: "Login" }); // 
-    } else {
-      let { status, data } = await getMenuList();
-      if (status === 200) {
-        // XE.clone 克隆数据 
-        // XE.mapTree 循环树状结构数据,类数组 map 方法
-        // XE.toArrayTree 把数据变为树状结构
-        // https://x-extends.github.io/xe-utils/#/
-        let _list: Mock.MenuObj[] = XE.clone(data, true);
-        data.forEach((item: Mock.MenuObj, index: number) => {
-          if (item.parentId === undefined) {
-            const { id, name, url, type, icon, sort } = item;
-            _list[index] = { id, name, url, type, icon, sort };
-          }
-        });
-
-        data = XE.mapTree(
-          XE.toArrayTree(_list, {
-            sortKey: "sort",
-          }),
-          (item) => {
-            if (
-              item.children &&
-              item.children.length <= 0
-            ) {
-              delete item.children;
-            }
-            return item;
-          }
-        );
-        await fnAddDynamicMenuRoutes([...baseStore.staticRoutes, ...data]);
-        baseStore[SET_MENU_LIST](data)
-
-        next({ ...to, replace: true });
-      } else {
-
-        next({ name: "Login" });
-      }
-    }
-  }
-});
-router.afterEach(() => {
-  NProgress.done();
-});
-
+import { staticRoutes } from '@/router/main';
 
 
 /**
@@ -131,3 +52,88 @@ const fnAddDynamicMenuRoutes = async (menuList: StaticRoute[] = [], routes: Rout
   }
 };
 
+fnAddDynamicMenuRoutes(staticRoutes)
+
+
+
+
+/**
+* @description 判断当前路由类型, global: 全局路由, main: 主入口路由
+* @param {*} route 当前路由
+*/
+function fnCurrentRouteType(route: RouteLocationNormalized, globalRoutes: RouteRecordRaw[] = []) {
+  for (let i = 0; i < globalRoutes.length; i++) {
+    if (route.name === globalRoutes[i].name) {
+      return "global";
+    } else if (
+      globalRoutes[i].children &&
+      (globalRoutes[i].children as RouteRecordRaw[]).length >= 1
+    ) {
+      fnCurrentRouteType(route, globalRoutes[i].children)
+    }
+  }
+  return "main"
+}
+
+// 路由拦截
+router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  const baseStore = useBaseStore();
+  let token = baseStore.token;
+  NProgress.start();
+  if ( // 已经添加了动态路由 或 访问的是全局路由，放行
+    fnCurrentRouteType(to, globalRoutes) === "global" ||
+    baseStore.menuList.length > 0
+  ) {
+
+    if (to.meta.title) {
+      document.title = (to.meta.title as string);
+    }
+    next();
+  } else {
+
+    if (!token || !/\S/.test(token)) {
+      next({ name: "Login" }); // 
+    } else {
+
+      let { status, data } = await getMenuList();
+      if (status === 200) {
+        // XE.clone 克隆数据 
+        // XE.mapTree 循环树状结构数据,类数组 map 方法
+        // XE.toArrayTree 把数据变为树状结构
+        // https://x-extends.github.io/xe-utils/#/
+        let _list: Mock.MenuObj[] = XE.clone(data, true);
+        data.forEach((item: Mock.MenuObj, index: number) => {
+          if (item.parentId === undefined) {
+            const { id, name, url, type, icon, sort } = item;
+            _list[index] = { id, name, url, type, icon, sort };
+          }
+        });
+
+        data = XE.mapTree(
+          XE.toArrayTree(_list, {
+            sortKey: "sort",
+          }),
+          (item) => {
+            if (
+              item.children &&
+              item.children.length <= 0
+            ) {
+              delete item.children;
+            }
+            return item;
+          }
+        );
+        await fnAddDynamicMenuRoutes(...data);
+        baseStore[SET_MENU_LIST](data)
+
+        next({ ...to, replace: true });
+      } else {
+
+        next({ name: "Login" });
+      }
+    }
+  }
+});
+router.afterEach(() => {
+  NProgress.done();
+});
