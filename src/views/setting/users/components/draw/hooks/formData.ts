@@ -48,7 +48,7 @@ export const useColumns = (drawForm: { [p: string]: string | number }, options: 
 
 
   // role 列表,数据是后端数据,监听更新表单数据
-  const stopWRo = watch(roles, (cur) => {
+  watch(roles, (cur) => {
     // 格式化数据 columns
     const columns = ref<LLLForm.Column[]>([]);
     Object.entries(drawForm).forEach(([prop, value]) => {
@@ -64,8 +64,5 @@ export const useColumns = (drawForm: { [p: string]: string | number }, options: 
     });
     options.columns = columns.value
 
-  })
-  onBeforeUnmount(() => {
-    stopWRo()
   })
 }

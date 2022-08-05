@@ -49,7 +49,7 @@ const { defaultVal, showButton, callback = {} } = options.value
 const formData = ref<LLLForm.FormData>({});
 
 
-const stopWcol = watchEffect(() => {
+watchEffect(() => {
   const form: LLLForm.FormData = {};
   options.value.columns.forEach(({ type, prop, value }) => {
     if (!validatenull(value)) {
@@ -73,9 +73,6 @@ const stopWcol = watchEffect(() => {
 })
 
 
-onBeforeUnmount(() => {
-  stopWcol()
-})
 
 
 // 监听表单数据更新

@@ -42,7 +42,7 @@ export const usePlaceholder = (props: Props) => {
 export const useInitVal = (emit: any, bindValue: Ref<string | number | undefined> | undefined) => {
   // props属性 为readonly,组件自己维护状态,初始状态由父组件传递
   const text = ref<string | number>();
-  const stopWatch = watchEffect(() => {
+  watchEffect(() => {
     text.value = bindValue?.value
   })
   /**
@@ -52,9 +52,7 @@ export const useInitVal = (emit: any, bindValue: Ref<string | number | undefined
 
     emit('update:bindValue', value)
   }
-  onBeforeUnmount(() => {
-    stopWatch()
-  })
+
   return {
     text,
     update
