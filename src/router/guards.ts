@@ -45,10 +45,7 @@ const fnAddDynamicMenuRoutes = async (menuList: StaticRoute[] = [], routes: Rout
   } else {
     Array.prototype.push.apply(mainRoutes.children, routes)
     router.addRoute(mainRoutes);
-    router.addRoute({
-      path: "/:w+",
-      redirect: { name: "404" },
-    });
+
   }
 };
 
@@ -79,22 +76,21 @@ function fnCurrentRouteType(route: RouteLocationNormalized, globalRoutes: RouteR
 router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const baseStore = useBaseStore();
   let token = baseStore.token;
+
   NProgress.start();
+
   if ( // 已经添加了动态路由 或 访问的是全局路由，放行
     fnCurrentRouteType(to, globalRoutes) === "global" ||
     baseStore.menuList.length > 0
   ) {
-
     if (to.meta.title) {
       document.title = (to.meta.title as string);
     }
     next();
   } else {
-
     if (!token || !/\S/.test(token)) {
       next({ name: "Login" }); // 
     } else {
-
       let { status, data } = await getMenuList();
       if (status === 200) {
         // XE.clone 克隆数据 
@@ -123,7 +119,12 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
             return item;
           }
         );
-        await fnAddDynamicMenuRoutes(...data);
+        await fnAddDynamicMenuRoutes(data);
+        // 不在路由初始化的时候配置，是因为,动态路由路径下,刷新页面,找不到路由，被此路由匹配
+        router.addRoute({
+          path: "/:w+",
+          redirect: { name: "404" },
+        });
         baseStore[SET_MENU_LIST](data)
 
         next({ ...to, replace: true });
