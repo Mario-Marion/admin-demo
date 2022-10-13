@@ -14,6 +14,9 @@
  * @rules 集中设定formItem验证规则                  【可选】
  * @showButton 表单按钮默认为空                     【可选】
  * @callback 表单事件回调                           【可选】
+ *   -submitHandle 提交回调                         【可选】
+ *   -resetHandle 重置回调                          【可选】
+ *   -updateHandle 更新回调                         【可选】
  * @columns 设置formItem                           
  *   -value是默认值,权重较低                        【可选】
  *   -rules是验证规则                               【可选】

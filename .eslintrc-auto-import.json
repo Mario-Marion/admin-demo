@@ -3,7 +3,7 @@
     "EffectScope": true,
     "ElLoading": true,
     "ElMessage": true,
-    "ElNotification": true,
+    "ElMessageBox": true,
     "asyncComputed": true,
     "autoResetRef": true,
     "computed": true,
