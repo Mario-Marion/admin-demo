@@ -9,9 +9,9 @@ export const staticRoutes: StaticRoute[] = [
     sort: 0,
   },
   {
-    name: "拖拽组件",
-    url: 'drag',
-    component: () => import("@/views/drag/index.vue"),
+    name: "Todos",
+    url: 'todos',
+    component: () => import("@/views/todos/index.vue"),
     type: 1,
     icon: "BrushFilled",
     sort: 0,
