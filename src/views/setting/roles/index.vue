@@ -6,7 +6,7 @@
     <lll-table :table="tableData">
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="status" label="状态">
-        <template v-slot="{ row }">
+        <template #default="{ row }">
           <el-tag :type="row.status == 0 ? 'danger' : ''">
             {{ row.status == 0 ? "停用" : "启用" }}
           </el-tag>

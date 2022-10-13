@@ -1,18 +1,20 @@
 <template>
   <el-sub-menu :index="`/${menu.name}`" v-if="menu.type == 0 && filerMenus(menu.children)">
+    
     <template #title>
       <el-icon :size="16" style="margin-right: 6px">
-        <component :is="menu.icon" />
-      </el-icon>
+      <component :is="menu.icon" />
+    </el-icon>
       <span>{{ menu.name }}</span>
     </template>
     <slide-menu v-for="child in menu.children" :key="child.id" :menu="child"></slide-menu>
   </el-sub-menu>
   <el-menu-item v-else-if="menu.type == 1" :index="setIndex(menu)" @click="clickMenu(menu)">
+    <el-icon :size="16" style="margin-right: 6px">
+      <component :is="menu.icon" />
+    </el-icon>
     <template #title>
-      <el-icon :size="16" style="margin-right: 6px">
-        <component :is="menu.icon" />
-      </el-icon>
+
       <span>{{ menu.name }}</span>
     </template>
   </el-menu-item>
